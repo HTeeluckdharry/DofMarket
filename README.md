@@ -36,6 +36,20 @@ During development, several challenges were encountered and documented:
     ```bash
     sudo python3 fruitseller.py
     ```
+## 🛠️ Model Training (Optional)
+
+If you wish to train the model instead of using the provided `fruit.pt`:
+
+1.  **Install Ultralytics:**
+    ```bash
+    pip install ultralytics
+    ```
+
+2.  **Prepare Dataset:**
+    Download the dataset ( yolo11 zip to computer)
+    ```bash
+    curl -L https://universe.roboflow.com/office-robotic/fruit-box/dataset/1
+    ```
 
 ## 🔮 Future Improvements
 * [ ] Retrain model with Real fruits(Instead of fruit cubes)
