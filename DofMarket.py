@@ -9,7 +9,7 @@ from tkinter import messagebox
 from PIL import Image, ImageTk
 from ultralytics import YOLO
 
-# Try importing the Arm library (Handle errors if running on non-Pi device for testing)
+# Try importing the Arm library (Handle errors if running without arm for testing)
 try:
     from Arm_Lib import Arm_Device
     arm_available = True
@@ -17,9 +17,7 @@ except ImportError:
     print("WARNING: Arm_Lib not found.")
     arm_available = False
 
-# ==========================================
 # CONFIGURATION & CONSTANTS
-# ==========================================
 
 # Arm Config
 MOVE_TIME = 1500
@@ -53,9 +51,8 @@ FRUIT_PRICES = {
 MODEL_PATH = '/home/pi/Documents/PythonCW/models/best.pt'
 CAMERA_INDEX = 0
 
-# ==========================================
 # HARDWARE CONTROL CLASS
-# ==========================================
+
 class RoboticArmController:
     def __init__(self):
         if arm_available:
@@ -110,6 +107,7 @@ class RoboticArmController:
         # 5. Move to Drop Zone
         update_status_callback("Moving to drop zone...")
         drop_pos_closed = list(POS_DROP)
+        
         drop_pos_closed[5] = GRIPPER_CLOSE
         self.move_arm(drop_pos_closed, MOVE_TIME) 
 
@@ -122,9 +120,8 @@ class RoboticArmController:
         self.move_arm(POS_HOME, MOVE_TIME)
         update_status_callback("Ready")
 
-# ==========================================
 # GUI APPLICATION
-# ==========================================
+
 class DofMarketApp:
     def __init__(self, root, arm_controller):
         self.root = root
@@ -143,7 +140,7 @@ class DofMarketApp:
         self.is_busy = False # Lock to prevent double clicking
         self.total_cost = 0
         
-        # --- Theme Config ---
+        # Theme Config
         self.bg_color = "#2c2c2c"
         self.panel_color = "#383838"
         self.text_color = "#ffffff"
@@ -151,7 +148,7 @@ class DofMarketApp:
         
         self.root.configure(bg=self.bg_color)
 
-        # --- AI / Video Setup ---
+        #  AI / Video Setup
         self.model = None  
         try:
             print("Loading YOLO model...")
@@ -162,20 +159,20 @@ class DofMarketApp:
             
 
         self.cap = cv2.VideoCapture(CAMERA_INDEX)
-        # OPTIMIZATION: Lower resolution for speed
+        
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         self.cap.set(cv2.CAP_PROP_BRIGHTNESS, 30)
         self.cap.set(cv2.CAP_PROP_EXPOSURE, -5)
         self.cap.set(cv2.CAP_PROP_CONTRAST, 30)
 
-        # --- OPTIMIZATION VARS ---
+        # OPTIMISATION 
         self.SKIP_FRAMES = 30
         self.frame_count = 0
         self.last_detections = [] # Stores (box_coords, label) tuples
 
         
-        # --- GUI Layout ---
+        #  GUI Layout 
         
         # Left Side: Video Feed
         self.video_frame = tk.Frame(root, width=640, height=480, bg="black")
@@ -247,12 +244,12 @@ class DofMarketApp:
         tk.Button(self.bottom_controls, text="EXIT", bg="red", fg="white", font=("Arial", 12, "bold"), 
                   command=self.on_close).pack(side=tk.RIGHT, padx=10, expand=True)
 
-        # --- Start Loops ---
+        # Start Loops 
         self.prev_frame_time = 0
         self.update_video()
 
     def show_checkout_screen(self):
-        """Displays the checkout/thank you screen."""
+       
         self.is_busy = True # Stop any arm threads if possible
         
         # Stop video
@@ -293,7 +290,7 @@ class DofMarketApp:
         self.status_var.set("Cost Reset")
 
     def start_pick_thread(self, fruit_name):
-        """Starts the picking process in a separate thread to keep video running."""
+        
         if self.is_busy:
             messagebox.showwarning("Busy", "Arm is currently moving! Please wait.")
             return
@@ -371,7 +368,7 @@ class DofMarketApp:
                         label_text = f"{self.model.names[cls]} {conf:.2f}"
                         self.last_detections.append((b, label_text))
             
-            # 2. ALWAYS DRAW: Draw the saved boxes on EVERY frame
+            # 2. Draw the saved boxes on EVERY frame
             for (b, label_text) in self.last_detections:
                 x1, y1, x2, y2 = b
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
@@ -393,7 +390,7 @@ class DofMarketApp:
             rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             img = Image.fromarray(rgb_image)
             
-            # Resize (ensure it matches the frame settings)
+            # Resize 
             img = img.resize((640, 480), Image.Resampling.LANCZOS)
             
             imgtk = ImageTk.PhotoImage(image=img)
@@ -404,7 +401,7 @@ class DofMarketApp:
         self.root.after(10, self.update_video)
 
     def on_close(self):
-        """Cleanup resources."""
+        # Cleanup resources
         print("Closing application...")
         if self.cap.isOpened():
             self.cap.release()
