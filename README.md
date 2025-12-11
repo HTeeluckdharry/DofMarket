@@ -46,12 +46,12 @@ If you wish to train the model instead of using the provided `fruit.pt`:
     ```
 
 2.  **Prepare Dataset:**
-    Download the dataset ( yolo11 zip to computer)
+    Download the dataset as zip yolo11
     ```bash
-    curl -L https://universe.roboflow.com/office-robotic/fruit-box/dataset/1
+    https://universe.roboflow.com/office-robotic/fruit-box/dataset/1
     ```
 
 ## 🔮 Future Improvements
-* [ ] Retrain model with Real fruits(Instead of fruit cubes)
-* [ ] Convert model file in different format(e.g Tflite) for better frames.
-* [ ] Implement real Inverse Kinematics for dynamic grabbing.
+*  Retrain model with Real fruits(Instead of fruit cubes)
+*  Convert model file in different format(e.g Tflite) for better frames.
+*  Implement real Inverse Kinematics for dynamic grabbing.
